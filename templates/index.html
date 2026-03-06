@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Absensi</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#74b9ff,#a29bfe);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.container{
+width:90%;
+max-width:900px;
+background:white;
+padding:30px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+.top-bar{
+display:flex;
+justify-content:space-between;
+margin-bottom:15px;
+}
+
+.top-bar a{
+text-decoration:none;
+padding:8px 12px;
+border-radius:6px;
+color:white;
+font-size:13px;
+}
+
+.logout{
+background:#d63031;
+}
+
+.export{
+background:#00b894;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#0984e3;
+color:white;
+padding:10px;
+}
+
+td{
+padding:10px;
+text-align:center;
+}
+
+tr:nth-child(even){
+background:#f1f2f6;
+}
+
+.hadir{color:green;font-weight:bold;}
+.izin{color:orange;font-weight:bold;}
+.sakit{color:blue;font-weight:bold;}
+
+.filter{
+margin-bottom:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>📊 Dashboard Absensi Siswa</h2>
+
+<div class="top-bar">
+
+<a href="/export" class="export">Export Excel</a>
+
+<a href="/logout" class="logout">Logout</a>
+
+</div>
+
+<form method="GET" class="filter">
+
+<select name="status" onchange="this.form.submit()">
+
+<option value="semua">Semua</option>
+
+<option value="Hadir"
+{% if status_filter=="Hadir" %}selected{% endif %}
+>Hadir</option>
+
+<option value="Izin"
+{% if status_filter=="Izin" %}selected{% endif %}
+>Izin</option>
+
+<option value="Sakit"
+{% if status_filter=="Sakit" %}selected{% endif %}
+>Sakit</option>
+
+</select>
+
+</form>
+
+<table>
+
+<tr>
+<th>Nama</th>
+<th>Kelas</th>
+<th>Status</th>
+<th>Tanggal</th>
+<th>Aksi</th>
+</tr>
+
+{% for siswa in data %}
+
+<tr>
+
+<td>{{ siswa.nama }}</td>
+
+<td>{{ siswa.kelas }}</td>
+
+<td class="{{ siswa.status|lower }}">
+{{ siswa.status }}
+</td>
+
+<td>{{ siswa.tanggal.strftime("%d-%m-%Y") }}</td>
+
+<td>
+<a href="/hapus/{{ siswa.id }}">Hapus</a>
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</body>
+</html>

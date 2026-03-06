@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Absen Siswa</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#74b9ff,#a29bfe);
+}
+
+.container{
+background:white;
+padding:40px;
+width:370px;
+border-radius:16px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+text-align:center;
+}
+
+.title{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+margin-bottom:25px;
+font-size:22px;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:8px;
+background:#0984e3;
+color:white;
+font-size:15px;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+background:#0652DD;
+transform:scale(1.03);
+}
+
+.success{
+background:#2ecc71;
+color:white;
+padding:10px;
+border-radius:6px;
+margin-bottom:15px;
+font-size:14px;
+}
+
+.link{
+margin-top:15px;
+font-size:13px;
+}
+
+.link a{
+text-decoration:none;
+color:#0984e3;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="title">
+<span>📋</span>
+<b>Absen Siswa</b>
+</div>
+
+{% if success %}
+<div class="success">
+Absen berhasil disimpan!
+</div>
+{% endif %}
+
+<form method="POST">
+
+<input type="text" name="nama" placeholder="Nama Siswa" required>
+
+<select name="kelas" required>
+<option value="">Pilih Kelas</option>
+<option>X-1</option>
+<option>X-2</option>
+<option>X-3</option>
+<option>X-4</option>
+<option>X-5</option>
+<option>X-6</option>
+<option>X-7</option>
+<option>X-8</option>
+<option>X-9</option>
+<option>X-10</option>
+
+<option>XI Saintek 1</option>
+<option>XI Saintek 2</option>
+<option>XI Sainkes 1</option>
+<option>XI Sainkes 2</option>
+<option>XI Sosek 1</option>
+<option>XI Sosek 2</option>
+<option>XI Soshum 1</option>
+<option>XI Soshum 2</option>
+<option>XI Soshum 3</option>
+<option>XI Soshum 4</option>
+
+<option>XII Saintek 1</option>
+<option>XII Saintek 2</option>
+<option>XII Sainkes 1</option>
+<option>XII Sainkes 2</option>
+<option>XII Sosek 1</option>
+<option>XII Sosek 2</option>
+<option>XII Soshum 1</option>
+<option>XII Soshum 2</option>
+<option>XII Soshum 3</option>
+<option>XII Soshum 4</option>
+<option>XII Soshum 5</option>
+
+</select>
+
+<select name="status">
+<option value="Hadir">Hadir</option>
+<option value="Izin">Izin</option>
+<option value="Sakit">Sakit</option>
+</select>
+
+<button type="submit">Absen</button>
+
+</form>
+
+<div class="link">
+<a href="/login">Login Guru</a>
+</div>
+
+</div>
+
+</body>
+</html>

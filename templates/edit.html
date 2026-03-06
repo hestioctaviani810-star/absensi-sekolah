@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Edit Absensi</title>
+</head>
+
+<body>
+
+<h2>Edit Data Absensi</h2>
+
+<form method="POST">
+
+<label>Nama</label>
+<br>
+<input type="text" name="nama" value="{{ data.nama }}">
+
+<br><br>
+
+<label>Kelas</label>
+<br>
+<input type="text" name="kelas" value="{{ data.kelas }}">
+
+<br><br>
+
+<label>Status</label>
+
+<select name="status">
+
+<option>Hadir</option>
+<option>Izin</option>
+<option>Sakit</option>
+<option>Alpha</option>
+
+</select>
+
+<br><br>
+
+<button type="submit">Update</button>
+
+</form>
+
+</body>
+</html>
