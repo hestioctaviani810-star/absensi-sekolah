@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import pandas as pd
+import os
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -27,56 +28,47 @@ with app.app_context():
 # =========================
 # HALAMAN ABSEN SISWA
 # =========================
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET","POST"])
 def absen():
 
     if request.method == "POST":
 
-        nama = request.form.get("nama")
-        kelas = request.form.get("kelas")
-        status = request.form.get("status")
+        nama = request.form["nama"]
+        kelas = request.form["kelas"]
+        status = request.form["status"]
 
-        data = Absensi(
-            nama=nama,
-            kelas=kelas,
-            status=status
-        )
+        data = Absensi(nama=nama, kelas=kelas, status=status)
 
         db.session.add(data)
         db.session.commit()
 
         flash("Absen berhasil!")
-
         return redirect("/")
 
     return render_template("absen.html")
 
-
 # =========================
 # LOGIN GURU
 # =========================
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["GET","POST"])
 def login():
 
     if request.method == "POST":
 
-        username = request.form.get("username")
-        password = request.form.get("password")
+        username = request.form["username"]
+        password = request.form["password"]
 
         if username == "admin" and password == "smanciojaya123":
-
             session["login"] = True
-
             return redirect("/dashboard")
 
         else:
-            flash("Username atau Password salah")
+            return render_template("login.html", error="Username atau Password salah")
 
     return render_template("login.html")
 
-
 # =========================
-# DASHBOARD GURU
+# DASHBOARD
 # =========================
 @app.route("/dashboard")
 def dashboard():
@@ -84,15 +76,14 @@ def dashboard():
     if "login" not in session:
         return redirect("/login")
 
-    status_filter = request.args.get("status", "semua")
+    status_filter = request.args.get("status","semua")
 
     if status_filter == "semua":
-        data = Absensi.query.order_by(Absensi.tanggal.desc()).all()
+        data = Absensi.query.all()
     else:
-        data = Absensi.query.filter_by(status=status_filter).order_by(Absensi.tanggal.desc()).all()
+        data = Absensi.query.filter_by(status=status_filter).all()
 
     return render_template("index.html", data=data, status_filter=status_filter)
-
 
 # =========================
 # HAPUS DATA
@@ -103,15 +94,13 @@ def hapus(id):
     if "login" not in session:
         return redirect("/login")
 
-    data = Absensi.query.get_or_404(id)
+    data = Absensi.query.get(id)
 
-    db.session.delete(data)
-    db.session.commit()
-
-    flash("Data berhasil dihapus")
+    if data:
+        db.session.delete(data)
+        db.session.commit()
 
     return redirect("/dashboard")
-
 
 # =========================
 # EXPORT EXCEL
@@ -131,16 +120,13 @@ def export():
             "Nama": d.nama,
             "Kelas": d.kelas,
             "Status": d.status,
-            "Tanggal": d.tanggal.strftime("%d-%m-%Y %H:%M")
+            "Tanggal": d.tanggal.strftime("%d-%m-%Y")
         })
 
     df = pd.DataFrame(hasil)
+    df.to_excel("absensi.xlsx", index=False)
 
-    file = "absensi.xlsx"
-    df.to_excel(file, index=False)
-
-    return "File Excel berhasil dibuat."
-
+    return "File Excel berhasil dibuat di folder project."
 
 # =========================
 # LOGOUT
@@ -149,12 +135,12 @@ def export():
 def logout():
 
     session.pop("login", None)
-
     return redirect("/login")
 
 
 # =========================
-# RUN APP
+# RUN SERVER
 # =========================
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
