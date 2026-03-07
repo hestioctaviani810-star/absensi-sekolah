@@ -6,10 +6,16 @@ import io
 import os
 
 app = Flask(__name__)
-app.secret_key = "secret123"
+app.secret_key = "absensi_secret"
 
 # =========================
-# DATABASE CONFIG
+# LOGIN GURU (UBAH DI SINI)
+# =========================
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "sekolah123"
+
+# =========================
+# DATABASE
 # =========================
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///absensi.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -36,7 +42,7 @@ def home():
 # =========================
 # ABSEN SISWA
 # =========================
-@app.route("/absen", methods=["GET", "POST"])
+@app.route("/absen", methods=["GET","POST"])
 def absen():
 
     if request.method == "POST":
@@ -46,7 +52,7 @@ def absen():
         status = request.form.get("status")
 
         if not nama or not kelas or not status:
-            flash("Data belum lengkap!")
+            flash("Data belum lengkap")
             return redirect("/absen")
 
         data = Absensi(
@@ -59,6 +65,7 @@ def absen():
         db.session.commit()
 
         flash("Absensi berhasil!")
+
         return redirect("/absen")
 
     return render_template("absen.html")
@@ -66,7 +73,7 @@ def absen():
 # =========================
 # LOGIN GURU
 # =========================
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["GET","POST"])
 def login():
 
     if request.method == "POST":
@@ -74,9 +81,11 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        if username == "guru" and password == "123":
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+
             session["login"] = True
             return redirect("/dashboard")
+
         else:
             flash("Username atau password salah")
 
@@ -160,13 +169,13 @@ def logout():
     return redirect("/login")
 
 # =========================
-# INIT DATABASE
+# BUAT DATABASE
 # =========================
 with app.app_context():
     db.create_all()
 
 # =========================
-# RUN APP (RAILWAY FIX)
+# RUN APP
 # =========================
 if __name__ == "__main__":
 
@@ -174,6 +183,5 @@ if __name__ == "__main__":
 
     app.run(
         host="0.0.0.0",
-        port=port,
-        debug=False
+        port=port
     )
