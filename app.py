@@ -9,10 +9,10 @@ app = Flask(__name__)
 app.secret_key = "absensi_secret"
 
 # =========================
-# LOGIN GURU (UBAH DI SINI)
+# LOGIN GURU
 # =========================
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "sekolah123"
+ADMIN_USERNAME = "adminsmancio"
+ADMIN_PASSWORD = "smanciojaya123"
 
 # =========================
 # DATABASE
@@ -82,10 +82,8 @@ def login():
         password = request.form.get("password")
 
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
-
             session["login"] = True
             return redirect("/dashboard")
-
         else:
             flash("Username atau password salah")
 
@@ -169,7 +167,7 @@ def logout():
     return redirect("/login")
 
 # =========================
-# BUAT DATABASE
+# INIT DATABASE
 # =========================
 with app.app_context():
     db.create_all()
