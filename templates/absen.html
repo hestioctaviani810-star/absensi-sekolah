@@ -6,7 +6,7 @@
 <style>
 
 body{
-font-family: Arial;
+font-family: Arial, sans-serif;
 background: linear-gradient(135deg,#4facfe,#00c6ff);
 height:100vh;
 display:flex;
@@ -24,12 +24,17 @@ text-align:center;
 box-shadow:0 10px 20px rgba(0,0,0,0.2);
 }
 
+h2{
+margin-top:0;
+}
+
 input,select{
 width:100%;
 padding:10px;
 margin:8px 0;
 border-radius:6px;
 border:1px solid #ccc;
+font-size:14px;
 }
 
 button{
@@ -41,10 +46,15 @@ color:white;
 font-size:15px;
 border-radius:6px;
 cursor:pointer;
+transition:0.2s;
 }
 
 button:hover{
 background:#2d8cf0;
+}
+
+button:active{
+transform:scale(0.97);
 }
 
 .notif{
@@ -53,6 +63,7 @@ color:white;
 padding:10px;
 border-radius:6px;
 margin-bottom:10px;
+font-size:14px;
 }
 
 </style>
@@ -78,13 +89,13 @@ margin-bottom:10px;
 <script>
 setTimeout(function(){
 window.location.href="/absen";
-},3000)
+},2000)
 </script>
 
 {% endif %}
 {% endwith %}
 
-<form method="POST">
+<form method="POST" onsubmit="return loading()">
 
 <input type="text" name="nama" placeholder="Nama siswa" required>
 
@@ -102,11 +113,24 @@ window.location.href="/absen";
 <option>Alpha</option>
 </select>
 
-<button type="submit">📌 Absen Sekarang</button>
+<button id="btn">📌 Absen Sekarang</button>
 
 </form>
 
 </div>
+
+<script>
+
+function loading(){
+
+document.getElementById("btn").innerHTML="⏳ Mengirim...";
+document.getElementById("btn").disabled=true;
+
+return true;
+
+}
+
+</script>
 
 </body>
 </html>
