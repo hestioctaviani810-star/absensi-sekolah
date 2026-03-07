@@ -1,50 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+<meta charset="UTF-8">
 <title>Absensi Siswa</title>
 
 <style>
 
+*{
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
+
 body{
-font-family: Arial, sans-serif;
-background: linear-gradient(135deg,#4facfe,#00c6ff);
+margin:0;
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-margin:0;
+background:linear-gradient(135deg,#4facfe,#00c6ff);
 }
 
 .card{
 background:white;
-padding:30px;
-border-radius:12px;
-width:320px;
+padding:35px;
+width:350px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
 text-align:center;
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
 }
 
 h2{
-margin-top:0;
+margin-bottom:20px;
 }
 
 input,select{
 width:100%;
-padding:10px;
-margin:8px 0;
-border-radius:6px;
+padding:12px;
+margin-bottom:12px;
+border-radius:8px;
 border:1px solid #ccc;
 font-size:14px;
 }
 
 button{
 width:100%;
-padding:10px;
-background:#4facfe;
+padding:12px;
 border:none;
+border-radius:8px;
+background:#4facfe;
 color:white;
 font-size:15px;
-border-radius:6px;
 cursor:pointer;
 transition:0.2s;
 }
@@ -61,9 +66,24 @@ transform:scale(0.97);
 background:#2ecc71;
 color:white;
 padding:10px;
-border-radius:6px;
-margin-bottom:10px;
+border-radius:8px;
+margin-bottom:15px;
 font-size:14px;
+}
+
+.login-link{
+margin-top:15px;
+font-size:13px;
+}
+
+.login-link a{
+color:#2d8cf0;
+text-decoration:none;
+font-weight:bold;
+}
+
+.login-link a:hover{
+text-decoration:underline;
 }
 
 </style>
@@ -101,21 +121,25 @@ window.location.href="/absen";
 
 <select name="kelas" required>
 <option value="">Pilih Kelas</option>
-<option>10</option>
-<option>11</option>
-<option>12</option>
+<option value="10">Kelas 10</option>
+<option value="11">Kelas 11</option>
+<option value="12">Kelas 12</option>
 </select>
 
 <select name="status" required>
-<option>Hadir</option>
-<option>Izin</option>
-<option>Sakit</option>
-<option>Alpha</option>
+<option value="Hadir">Hadir</option>
+<option value="Izin">Izin</option>
+<option value="Sakit">Sakit</option>
+<option value="Alpha">Alpha</option>
 </select>
 
 <button type="submit" id="btn">📌 Absen Sekarang</button>
 
 </form>
+
+<div class="login-link">
+Guru? <a href="/login">Login di sini</a>
+</div>
 
 </div>
 
