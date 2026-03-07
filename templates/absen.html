@@ -2,47 +2,38 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Absen Siswa</title>
+<title>Absensi Siswa</title>
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
-}
-
 body{
+font-family: Arial, sans-serif;
+background: linear-gradient(135deg,#4e73df,#36b9cc);
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:linear-gradient(135deg,#74b9ff,#a29bfe);
+margin:0;
 }
 
 .container{
 background:white;
-padding:40px;
-width:370px;
-border-radius:16px;
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
+padding:30px;
+border-radius:12px;
+width:320px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
 text-align:center;
 }
 
-.title{
-display:flex;
-justify-content:center;
-align-items:center;
-gap:10px;
-margin-bottom:25px;
-font-size:22px;
+h2{
+margin-bottom:20px;
+color:#4e73df;
 }
 
 input,select{
 width:100%;
-padding:12px;
-margin-bottom:15px;
+padding:10px;
+margin:8px 0;
 border-radius:8px;
 border:1px solid #ccc;
 font-size:14px;
@@ -50,38 +41,40 @@ font-size:14px;
 
 button{
 width:100%;
-padding:12px;
+padding:10px;
+background:#4e73df;
+color:white;
 border:none;
 border-radius:8px;
-background:#0984e3;
-color:white;
 font-size:15px;
 cursor:pointer;
 transition:0.3s;
 }
 
 button:hover{
-background:#0652DD;
-transform:scale(1.03);
+background:#2e59d9;
+transform:scale(1.05);
 }
 
 .success{
 background:#2ecc71;
 color:white;
 padding:10px;
-border-radius:6px;
-margin-bottom:15px;
+border-radius:8px;
+margin-bottom:10px;
 font-size:14px;
+animation:muncul 0.4s ease;
 }
 
-.link{
-margin-top:15px;
-font-size:13px;
+@keyframes muncul{
+from{
+opacity:0;
+transform:translateY(-10px);
 }
-
-.link a{
-text-decoration:none;
-color:#0984e3;
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
 </style>
@@ -91,16 +84,26 @@ color:#0984e3;
 
 <div class="container">
 
-<div class="title">
-<span>📋</span>
-<b>Absen Siswa</b>
+<h2>📋 Absensi Siswa</h2>
+
+<!-- NOTIFIKASI -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+
+<div class="success">
+✅ {{ messages[0] }}
 </div>
 
-{% if success %}
-<div class="success">
-Absen berhasil disimpan!
-</div>
+<audio id="notif">
+<source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3">
+</audio>
+
+<script>
+document.getElementById("notif").play();
+</script>
+
 {% endif %}
+{% endwith %}
 
 <form method="POST">
 
@@ -108,55 +111,22 @@ Absen berhasil disimpan!
 
 <select name="kelas" required>
 <option value="">Pilih Kelas</option>
-<option>X-1</option>
-<option>X-2</option>
-<option>X-3</option>
-<option>X-4</option>
-<option>X-5</option>
-<option>X-6</option>
-<option>X-7</option>
-<option>X-8</option>
-<option>X-9</option>
-<option>X-10</option>
-
-<option>XI Saintek 1</option>
-<option>XI Saintek 2</option>
-<option>XI Sainkes 1</option>
-<option>XI Sainkes 2</option>
-<option>XI Sosek 1</option>
-<option>XI Sosek 2</option>
-<option>XI Soshum 1</option>
-<option>XI Soshum 2</option>
-<option>XI Soshum 3</option>
-<option>XI Soshum 4</option>
-
-<option>XII Saintek 1</option>
-<option>XII Saintek 2</option>
-<option>XII Sainkes 1</option>
-<option>XII Sainkes 2</option>
-<option>XII Sosek 1</option>
-<option>XII Sosek 2</option>
-<option>XII Soshum 1</option>
-<option>XII Soshum 2</option>
-<option>XII Soshum 3</option>
-<option>XII Soshum 4</option>
-<option>XII Soshum 5</option>
-
+<option>10</option>
+<option>11</option>
+<option>12</option>
 </select>
 
-<select name="status">
-<option value="Hadir">Hadir</option>
-<option value="Izin">Izin</option>
-<option value="Sakit">Sakit</option>
+<select name="status" required>
+<option value="">Status Kehadiran</option>
+<option>Hadir</option>
+<option>Izin</option>
+<option>Sakit</option>
+<option>Alpha</option>
 </select>
 
-<button type="submit">Absen</button>
+<button type="submit">📌 Absen Sekarang</button>
 
 </form>
-
-<div class="link">
-<a href="/login">Login Guru</a>
-</div>
 
 </div>
 

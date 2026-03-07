@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from flask import send_file
 import pandas as pd
 import os
+import io
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -124,9 +126,17 @@ def export():
         })
 
     df = pd.DataFrame(hasil)
-    df.to_excel("absensi.xlsx", index=False)
 
-    return "File Excel berhasil dibuat di folder project."
+    # buat file excel di memory
+    output = io.BytesIO()
+    df.to_excel(output, index=False)
+    output.seek(0)
+
+    return send_file(
+        output,
+        download_name="absensi_siswa.xlsx",
+        as_attachment=True
+    )
 
 # =========================
 # LOGOUT
