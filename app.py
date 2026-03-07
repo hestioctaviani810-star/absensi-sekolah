@@ -75,7 +75,6 @@ def login():
         if username == "guru" and password == "123":
 
             session["login"] = True
-
             return redirect("/dashboard")
 
         else:
@@ -109,8 +108,9 @@ def hapus(id):
 
     data = Absensi.query.get(id)
 
-    db.session.delete(data)
-    db.session.commit()
+    if data:
+        db.session.delete(data)
+        db.session.commit()
 
     return redirect("/dashboard")
 
@@ -161,10 +161,20 @@ def logout():
 
 
 # =========================
-# RUN APP
+# INIT DATABASE
+# =========================
+with app.app_context():
+    db.create_all()
+
+
+# =========================
+# RUN APP (RAILWAY FIX)
 # =========================
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
 
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+
+    app.run(
+        host="0.0.0.0",
+        port=port
+    )
