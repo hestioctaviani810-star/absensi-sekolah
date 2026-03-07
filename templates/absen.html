@@ -83,13 +83,13 @@ font-size:14px;
 </div>
 
 <audio autoplay>
-<source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3">
+<source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
 </audio>
 
 <script>
 setTimeout(function(){
 window.location.href="/absen";
-},2000)
+},2000);
 </script>
 
 {% endif %}
@@ -113,7 +113,7 @@ window.location.href="/absen";
 <option>Alpha</option>
 </select>
 
-<button id="btn">📌 Absen Sekarang</button>
+<button type="submit" id="btn">📌 Absen Sekarang</button>
 
 </form>
 
@@ -122,12 +122,9 @@ window.location.href="/absen";
 <script>
 
 function loading(){
-
 document.getElementById("btn").innerHTML="⏳ Mengirim...";
 document.getElementById("btn").disabled=true;
-
 return true;
-
 }
 
 </script>

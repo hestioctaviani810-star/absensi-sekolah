@@ -8,7 +8,9 @@ import os
 app = Flask(__name__)
 app.secret_key = "secret123"
 
-# DATABASE
+# =========================
+# DATABASE CONFIG
+# =========================
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///absensi.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -19,11 +21,10 @@ db = SQLAlchemy(app)
 # =========================
 class Absensi(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nama = db.Column(db.String(100))
-    kelas = db.Column(db.String(20))
-    status = db.Column(db.String(20))
+    nama = db.Column(db.String(100), nullable=False)
+    kelas = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(20), nullable=False)
     tanggal = db.Column(db.DateTime, default=datetime.utcnow)
-
 
 # =========================
 # HALAMAN UTAMA
@@ -32,18 +33,21 @@ class Absensi(db.Model):
 def home():
     return redirect("/absen")
 
-
 # =========================
 # ABSEN SISWA
 # =========================
-@app.route("/absen", methods=["GET","POST"])
+@app.route("/absen", methods=["GET", "POST"])
 def absen():
 
     if request.method == "POST":
 
-        nama = request.form["nama"]
-        kelas = request.form["kelas"]
-        status = request.form["status"]
+        nama = request.form.get("nama")
+        kelas = request.form.get("kelas")
+        status = request.form.get("status")
+
+        if not nama or not kelas or not status:
+            flash("Data belum lengkap!")
+            return redirect("/absen")
 
         data = Absensi(
             nama=nama,
@@ -55,33 +59,28 @@ def absen():
         db.session.commit()
 
         flash("Absensi berhasil!")
-
         return redirect("/absen")
 
     return render_template("absen.html")
 
-
 # =========================
 # LOGIN GURU
 # =========================
-@app.route("/login", methods=["GET","POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
 
     if request.method == "POST":
 
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         if username == "guru" and password == "123":
-
             session["login"] = True
             return redirect("/dashboard")
-
         else:
             flash("Username atau password salah")
 
     return render_template("login.html")
-
 
 # =========================
 # DASHBOARD GURU
@@ -96,7 +95,6 @@ def dashboard():
 
     return render_template("index.html", data=data)
 
-
 # =========================
 # HAPUS DATA
 # =========================
@@ -106,14 +104,14 @@ def hapus(id):
     if "login" not in session:
         return redirect("/login")
 
-    data = Absensi.query.get(id)
+    data = Absensi.query.get_or_404(id)
 
-    if data:
-        db.session.delete(data)
-        db.session.commit()
+    db.session.delete(data)
+    db.session.commit()
+
+    flash("Data berhasil dihapus")
 
     return redirect("/dashboard")
-
 
 # =========================
 # EXPORT EXCEL
@@ -139,15 +137,15 @@ def export():
     df = pd.DataFrame(hasil)
 
     output = io.BytesIO()
-    df.to_excel(output, index=False)
+    df.to_excel(output, index=False, engine="openpyxl")
     output.seek(0)
 
     return send_file(
         output,
         download_name="absensi_siswa.xlsx",
-        as_attachment=True
+        as_attachment=True,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
-
 
 # =========================
 # LOGOUT
@@ -157,15 +155,15 @@ def logout():
 
     session.pop("login", None)
 
-    return redirect("/login")
+    flash("Berhasil logout")
 
+    return redirect("/login")
 
 # =========================
 # INIT DATABASE
 # =========================
 with app.app_context():
     db.create_all()
-
 
 # =========================
 # RUN APP (RAILWAY FIX)
@@ -176,5 +174,6 @@ if __name__ == "__main__":
 
     app.run(
         host="0.0.0.0",
-        port=port
+        port=port,
+        debug=False
     )
