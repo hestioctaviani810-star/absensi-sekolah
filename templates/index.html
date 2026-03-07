@@ -3,142 +3,191 @@
 <head>
 <meta charset="UTF-8">
 <title>Data Absensi</title>
+
+<script>
+setInterval(function(){
+location.reload();
+},2000);
+</script>
+
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f0f2f5;
-    margin:0;
-    padding:0;
+
+body{
+font-family:Arial;
+background:#eef2f7;
+margin:0;
 }
-.container {
-    width: 90%;
-    max-width: 1000px;
-    margin: 40px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+
+.container{
+width:90%;
+max-width:1000px;
+margin:40px auto;
+background:white;
+padding:30px;
+border-radius:14px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
-h2 {
-    text-align: center;
-    color: #4e73df;
-    margin-bottom: 25px;
+
+h2{
+text-align:center;
+color:#4e73df;
+margin-bottom:25px;
 }
-button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-    font-size: 14px;
+
+button{
+padding:8px 16px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+transition:0.2s;
 }
-button.export {
-    background-color: #4e73df;
-    color: white;
-    margin-right: 10px;
+
+.export{
+background:#4e73df;
+color:white;
 }
-button.export:hover {
-    background-color: #2e59d9;
-    transform: scale(1.05);
+
+.logout{
+background:#ff6b6b;
+color:white;
 }
-button.logout {
-    background-color: #ff6b6b;
-    color: white;
+
+.hapus{
+background:#ff4757;
+color:white;
 }
-button.logout:hover {
-    background-color: #e63946;
-    transform: scale(1.05);
+
+button:hover{
+transform:scale(1.05);
+opacity:0.9;
 }
-button.hapus {
-    background-color: #ff4757;
-    color: white;
+
+.table-wrapper{
+overflow-x:auto;
+border-radius:10px;
 }
-button.hapus:hover {
-    background-color: #e84118;
-    transform: scale(1.05);
+
+table{
+width:100%;
+border-collapse:collapse;
+overflow:hidden;
 }
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    font-size: 14px;
+
+th{
+background:#4e73df;
+color:white;
+padding:12px;
+position:sticky;
+top:0;
 }
-th, td {
-    padding: 10px;
-    text-align: center;
+
+td{
+padding:12px;
+border-bottom:1px solid #eee;
 }
-th {
-    background-color: #4e73df;
-    color: white;
+
+tr{
+transition:0.2s;
 }
-tr:nth-child(even) {
-    background-color: #f2f2f2;
+
+tr:hover{
+background:#f5f7ff;
 }
-.status-hadir { color: green; font-weight: bold; }
-.status-izin { color: orange; font-weight: bold; }
-.status-sakit { color: blue; font-weight: bold; }
-.status-alpha { color: red; font-weight: bold; }
-.filter {
-    margin-bottom: 15px;
-    text-align: center;
+
+.status-hadir{
+color:#2ecc71;
+font-weight:bold;
 }
-@media(max-width:600px){
-    table, th, td {
-        font-size: 12px;
-    }
-    button {
-        font-size: 12px;
-        padding: 6px 12px;
-    }
+
+.status-izin{
+color:#f39c12;
+font-weight:bold;
 }
+
+.status-sakit{
+color:#3498db;
+font-weight:bold;
+}
+
+.status-alpha{
+color:#e74c3c;
+font-weight:bold;
+}
+
+.filter{
+margin-bottom:15px;
+text-align:center;
+}
+
+select{
+padding:6px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
 </style>
 </head>
+
 <body>
 
 <div class="container">
-    <h2>📊 Data Absensi Siswa SMAN 1 Ciomas</h2>
 
-    <!-- tombol export & logout -->
-    <div style="margin-bottom:15px; text-align:center;">
-        <a href="/export"><button class="export">📥 Export Excel</button></a>
-        <a href="/logout"><button class="logout">🚪 Logout</button></a>
-    </div>
+<h2>📊 Data Absensi Siswa SMAN 1 Ciomas</h2>
 
-    <!-- filter status -->
-    <form method="GET" class="filter">
-        <label>Filter Status:</label>
-        <select name="status" onchange="this.form.submit()">
-            <option value="semua" {% if status_filter=='semua' %}selected{% endif %}>Semua</option>
-            <option value="Hadir" {% if status_filter=='Hadir' %}selected{% endif %}>Hadir</option>
-            <option value="Izin" {% if status_filter=='Izin' %}selected{% endif %}>Izin</option>
-            <option value="Sakit" {% if status_filter=='Sakit' %}selected{% endif %}>Sakit</option>
-            <option value="Alpha" {% if status_filter=='Alpha' %}selected{% endif %}>Alpha</option>
-        </select>
-    </form>
+<div style="text-align:center;margin-bottom:15px;">
+<a href="/export"><button class="export">📥 Export Excel</button></a>
+<a href="/logout"><button class="logout">🚪 Logout</button></a>
+</div>
 
-    <!-- tabel absensi -->
-    <table>
-        <tr>
-            <th>Nama</th>
-            <th>Kelas</th>
-            <th>Status</th>
-            <th>Tanggal</th>
-            <th>Aksi</th>
-        </tr>
-        {% for siswa in data %}
-        <tr>
-            <td>{{ siswa.nama }}</td>
-            <td>{{ siswa.kelas }}</td>
-            <td class="status-{{ siswa.status|lower }}">{{ siswa.status }}</td>
-            <td>{{ siswa.tanggal.strftime("%d-%m-%Y") }}</td>
-            <td>
-                <a href="/hapus/{{ siswa.id }}">
-                    <button class="hapus">🗑 Hapus</button>
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+<form method="GET" class="filter">
+<label>Filter Status:</label>
+<select name="status" onchange="this.form.submit()">
+<option value="semua">Semua</option>
+<option value="Hadir">Hadir</option>
+<option value="Izin">Izin</option>
+<option value="Sakit">Sakit</option>
+<option value="Alpha">Alpha</option>
+</select>
+</form>
+
+<div class="table-wrapper">
+
+<table>
+
+<tr>
+<th>Nama</th>
+<th>Kelas</th>
+<th>Status</th>
+<th>Tanggal</th>
+<th>Aksi</th>
+</tr>
+
+{% for siswa in data %}
+<tr>
+
+<td>{{ siswa.nama }}</td>
+
+<td>{{ siswa.kelas }}</td>
+
+<td class="status-{{ siswa.status|lower }}">
+{{ siswa.status }}
+</td>
+
+<td>{{ siswa.tanggal.strftime("%d-%m-%Y") }}</td>
+
+<td>
+<a href="/hapus/{{ siswa.id }}">
+<button class="hapus">🗑 Hapus</button>
+</a>
+</td>
+
+</tr>
+{% endfor %}
+
+</table>
+
+</div>
+
 </div>
 
 </body>
