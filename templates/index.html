@@ -28,6 +28,7 @@ box-shadow:0 10px 25px rgba(0,0,0,0.1);
 h2{
 text-align:center;
 color:#2c3e50;
+margin-bottom:20px;
 }
 
 button{
@@ -35,11 +36,11 @@ padding:8px 16px;
 border:none;
 border-radius:8px;
 cursor:pointer;
+transition:0.2s;
 }
 
-.export{
-background:#3498db;
-color:white;
+button:hover{
+transform:scale(1.05);
 }
 
 .logout{
@@ -61,6 +62,7 @@ margin-bottom:20px;
 display:flex;
 gap:10px;
 margin-bottom:20px;
+flex-wrap:wrap;
 }
 
 .stat{
@@ -70,12 +72,17 @@ color:white;
 border-radius:10px;
 text-align:center;
 font-weight:bold;
+min-width:120px;
 }
 
 .hadir{background:#2ecc71;}
 .izin{background:#f39c12;}
 .sakit{background:#3498db;}
 .alpha{background:#e74c3c;}
+
+.table-container{
+overflow-x:auto;
+}
 
 table{
 width:100%;
@@ -110,7 +117,38 @@ justify-content:center;
 
 .filter{
 text-align:center;
-margin-bottom:10px;
+margin-bottom:15px;
+}
+
+select{
+padding:5px;
+border-radius:5px;
+}
+
+/* MOBILE */
+
+@media (max-width:768px){
+
+.container{
+width:95%;
+}
+
+.stats{
+flex-direction:column;
+}
+
+.stat{
+font-size:14px;
+}
+
+table{
+font-size:13px;
+}
+
+th,td{
+padding:8px;
+}
+
 }
 
 </style>
@@ -154,7 +192,8 @@ Alpha<br>
 </div>
 
 <form method="GET" class="filter">
-Filter Status:
+
+Filter Status :
 
 <select name="status" onchange="this.form.submit()">
 <option value="semua">Semua</option>
@@ -165,6 +204,8 @@ Filter Status:
 </select>
 
 </form>
+
+<div class="table-container">
 
 <table>
 
@@ -201,6 +242,8 @@ Filter Status:
 {% endfor %}
 
 </table>
+
+</div>
 
 </div>
 

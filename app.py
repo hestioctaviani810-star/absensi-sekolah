@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -28,6 +28,7 @@ PASSWORD = "smanciojaya123"
 
 @app.route("/", methods=["GET", "POST"])
 def login():
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -49,9 +50,10 @@ def dashboard():
     status_filter = request.args.get("status")
 
     if status_filter and status_filter != "semua":
-        data = Absensi.query.filter_by(status=status_filter).all()
+        data = Absensi.query.filter_by(status=status_filter)\
+            .order_by(Absensi.id.desc()).all()
     else:
-        data = Absensi.query.all()
+        data = Absensi.query.order_by(Absensi.id.desc()).all()
 
     hadir = Absensi.query.filter_by(status="Hadir").count()
     izin = Absensi.query.filter_by(status="Izin").count()
@@ -93,10 +95,11 @@ def absen():
 
 
 # HAPUS DATA
-@app.route("/hapus/<id>")
+@app.route("/hapus/<int:id>")
 def hapus(id):
 
-    data = Absensi.query.get(id)
+    data = Absensi.query.get_or_404(id)
+
     db.session.delete(data)
     db.session.commit()
 
@@ -114,4 +117,5 @@ def logout():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+
     app.run(debug=True)
