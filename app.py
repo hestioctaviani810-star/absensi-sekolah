@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, send_file
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import pandas as pd
+import io
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -50,8 +52,7 @@ def dashboard():
     status_filter = request.args.get("status")
 
     if status_filter and status_filter != "semua":
-        data = Absensi.query.filter_by(status=status_filter)\
-            .order_by(Absensi.id.desc()).all()
+        data = Absensi.query.filter_by(status=status_filter).order_by(Absensi.id.desc()).all()
     else:
         data = Absensi.query.order_by(Absensi.id.desc()).all()
 
@@ -106,6 +107,39 @@ def hapus(id):
     return redirect("/dashboard")
 
 
+# EXPORT EXCEL
+@app.route("/export")
+def export():
+
+    if "login" not in session:
+        return redirect("/")
+
+    data = Absensi.query.all()
+
+    hasil = []
+
+    for siswa in data:
+        hasil.append({
+            "Nama": siswa.nama,
+            "Kelas": siswa.kelas,
+            "Status": siswa.status,
+            "Tanggal": siswa.tanggal.strftime("%d-%m-%Y"),
+            "Jam": siswa.jam
+        })
+
+    df = pd.DataFrame(hasil)
+
+    output = io.BytesIO()
+    df.to_excel(output, index=False)
+    output.seek(0)
+
+    return send_file(
+        output,
+        download_name="data_absensi.xlsx",
+        as_attachment=True
+    )
+
+
 # LOGOUT
 @app.route("/logout")
 def logout():
@@ -115,6 +149,7 @@ def logout():
 
 
 if __name__ == "__main__":
+
     with app.app_context():
         db.create_all()
 

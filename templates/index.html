@@ -43,6 +43,12 @@ button:hover{
 transform:scale(1.05);
 }
 
+.export{
+background:#3498db;
+color:white;
+margin-right:10px;
+}
+
 .logout{
 background:#e74c3c;
 color:white;
@@ -125,32 +131,6 @@ padding:5px;
 border-radius:5px;
 }
 
-/* MOBILE */
-
-@media (max-width:768px){
-
-.container{
-width:95%;
-}
-
-.stats{
-flex-direction:column;
-}
-
-.stat{
-font-size:14px;
-}
-
-table{
-font-size:13px;
-}
-
-th,td{
-padding:8px;
-}
-
-}
-
 </style>
 
 </head>
@@ -164,7 +144,15 @@ padding:8px;
 <h2>📊 Dashboard Absensi Siswa SMAN 1 Ciomas</h2>
 
 <div class="top">
-<a href="/logout"><button class="logout">Logout</button></a>
+
+<a href="/export">
+<button class="export">📥 Export Excel</button>
+</a>
+
+<a href="/logout">
+<button class="logout">Logout</button>
+</a>
+
 </div>
 
 <div class="stats">
