@@ -2,14 +2,14 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Data Absensi Siswa</title>
+<title>Dashboard Absensi</title>
 
 <style>
 
 body{
 font-family:Arial;
-margin:0;
 background:#f5f7fa;
+margin:0;
 }
 
 .container{
@@ -22,23 +22,19 @@ margin:40px auto;
 background:white;
 padding:25px;
 border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
 
 h2{
 text-align:center;
 color:#2c3e50;
-margin-bottom:20px;
 }
-
-/* tombol */
 
 button{
 padding:8px 16px;
 border:none;
 border-radius:8px;
 cursor:pointer;
-transition:0.2s;
 }
 
 .export{
@@ -47,7 +43,7 @@ color:white;
 }
 
 .logout{
-background:#ff6b6b;
+background:#e74c3c;
 color:white;
 }
 
@@ -56,24 +52,22 @@ background:#ff4d4d;
 color:white;
 }
 
-button:hover{
-transform:scale(1.05);
+.top{
+text-align:center;
+margin-bottom:20px;
 }
-
-/* statistik */
 
 .stats{
 display:flex;
-gap:15px;
+gap:10px;
 margin-bottom:20px;
-flex-wrap:wrap;
 }
 
 .stat{
 flex:1;
 padding:20px;
-border-radius:10px;
 color:white;
+border-radius:10px;
 text-align:center;
 font-weight:bold;
 }
@@ -83,12 +77,9 @@ font-weight:bold;
 .sakit{background:#3498db;}
 .alpha{background:#e74c3c;}
 
-/* tabel */
-
 table{
 width:100%;
 border-collapse:collapse;
-margin-top:15px;
 }
 
 th{
@@ -112,18 +103,9 @@ background:#f2f6ff;
 .status-sakit{color:#3498db;font-weight:bold;}
 .status-alpha{color:#e74c3c;font-weight:bold;}
 
-.aksi{
-text-align:center;
-}
-
 .aksi a{
 display:flex;
 justify-content:center;
-}
-
-.top{
-text-align:center;
-margin-bottom:15px;
 }
 
 .filter{
@@ -132,6 +114,7 @@ margin-bottom:10px;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -140,14 +123,12 @@ margin-bottom:10px;
 
 <div class="card">
 
-<h2>📊 Data Absensi Siswa SMAN 1 Ciomas</h2>
+<h2>📊 Dashboard Absensi Siswa SMAN 1 Ciomas</h2>
 
 <div class="top">
-<a href="/export"><button class="export">📥 Export Excel</button></a>
-<a href="/logout"><button class="logout">🚪 Logout</button></a>
+<a href="/logout"><button class="logout">Logout</button></a>
 </div>
 
-<!-- statistik -->
 <div class="stats">
 
 <div class="stat hadir">
@@ -172,10 +153,9 @@ Alpha<br>
 
 </div>
 
-<!-- filter -->
-
 <form method="GET" class="filter">
 Filter Status:
+
 <select name="status" onchange="this.form.submit()">
 <option value="semua">Semua</option>
 <option value="Hadir">Hadir</option>
@@ -183,6 +163,7 @@ Filter Status:
 <option value="Sakit">Sakit</option>
 <option value="Alpha">Alpha</option>
 </select>
+
 </form>
 
 <table>
@@ -192,6 +173,7 @@ Filter Status:
 <th>Kelas</th>
 <th>Status</th>
 <th>Tanggal</th>
+<th>Jam</th>
 <th>Aksi</th>
 </tr>
 
@@ -199,7 +181,6 @@ Filter Status:
 <tr>
 
 <td>{{ siswa.nama }}</td>
-
 <td>{{ siswa.kelas }}</td>
 
 <td class="status-{{ siswa.status|lower }}">
@@ -207,6 +188,8 @@ Filter Status:
 </td>
 
 <td>{{ siswa.tanggal.strftime("%d-%m-%Y") }}</td>
+
+<td>{{ siswa.jam }}</td>
 
 <td class="aksi">
 <a href="/hapus/{{ siswa.id }}">
