@@ -2,37 +2,36 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Data Absensi</title>
-
-<script>
-setInterval(function(){
-location.reload();
-},2000);
-</script>
+<title>Data Absensi Siswa</title>
 
 <style>
 
 body{
 font-family:Arial;
-background:#eef2f7;
 margin:0;
+background:#f5f7fa;
 }
 
 .container{
 width:90%;
-max-width:1000px;
+max-width:1100px;
 margin:40px auto;
+}
+
+.card{
 background:white;
-padding:30px;
-border-radius:14px;
-box-shadow:0 10px 25px rgba(0,0,0,0.1);
+padding:25px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
 }
 
 h2{
 text-align:center;
-color:#4e73df;
-margin-bottom:25px;
+color:#2c3e50;
+margin-bottom:20px;
 }
+
+/* tombol */
 
 button{
 padding:8px 16px;
@@ -43,7 +42,7 @@ transition:0.2s;
 }
 
 .export{
-background:#4e73df;
+background:#3498db;
 color:white;
 }
 
@@ -53,76 +52,83 @@ color:white;
 }
 
 .hapus{
-background:#ff4757;
+background:#ff4d4d;
 color:white;
 }
 
 button:hover{
 transform:scale(1.05);
-opacity:0.9;
 }
 
-.table-wrapper{
-overflow-x:auto;
-border-radius:10px;
+/* statistik */
+
+.stats{
+display:flex;
+gap:15px;
+margin-bottom:20px;
+flex-wrap:wrap;
 }
+
+.stat{
+flex:1;
+padding:20px;
+border-radius:10px;
+color:white;
+text-align:center;
+font-weight:bold;
+}
+
+.hadir{background:#2ecc71;}
+.izin{background:#f39c12;}
+.sakit{background:#3498db;}
+.alpha{background:#e74c3c;}
+
+/* tabel */
 
 table{
 width:100%;
 border-collapse:collapse;
-overflow:hidden;
+margin-top:15px;
 }
 
 th{
-background:#4e73df;
+background:#5dade2;
 color:white;
 padding:12px;
-position:sticky;
-top:0;
 }
 
 td{
 padding:12px;
+text-align:center;
 border-bottom:1px solid #eee;
 }
 
-tr{
-transition:0.2s;
-}
-
 tr:hover{
-background:#f5f7ff;
+background:#f2f6ff;
 }
 
-.status-hadir{
-color:#2ecc71;
-font-weight:bold;
-}
+.status-hadir{color:#2ecc71;font-weight:bold;}
+.status-izin{color:#f39c12;font-weight:bold;}
+.status-sakit{color:#3498db;font-weight:bold;}
+.status-alpha{color:#e74c3c;font-weight:bold;}
 
-.status-izin{
-color:#f39c12;
-font-weight:bold;
-}
-
-.status-sakit{
-color:#3498db;
-font-weight:bold;
-}
-
-.status-alpha{
-color:#e74c3c;
-font-weight:bold;
-}
-
-.filter{
-margin-bottom:15px;
+.aksi{
 text-align:center;
 }
 
-select{
-padding:6px;
-border-radius:6px;
-border:1px solid #ccc;
+.aksi a{
+display:flex;
+justify-content:center;
+}
+
+.top{
+text-align:center;
+margin-bottom:15px;
+}
+
+.filter{
+text-align:center;
+margin-bottom:10px;
 }
 
 </style>
@@ -132,15 +138,44 @@ border:1px solid #ccc;
 
 <div class="container">
 
+<div class="card">
+
 <h2>📊 Data Absensi Siswa SMAN 1 Ciomas</h2>
 
-<div style="text-align:center;margin-bottom:15px;">
+<div class="top">
 <a href="/export"><button class="export">📥 Export Excel</button></a>
 <a href="/logout"><button class="logout">🚪 Logout</button></a>
 </div>
 
+<!-- statistik -->
+<div class="stats">
+
+<div class="stat hadir">
+Hadir<br>
+{{ hadir }}
+</div>
+
+<div class="stat izin">
+Izin<br>
+{{ izin }}
+</div>
+
+<div class="stat sakit">
+Sakit<br>
+{{ sakit }}
+</div>
+
+<div class="stat alpha">
+Alpha<br>
+{{ alpha }}
+</div>
+
+</div>
+
+<!-- filter -->
+
 <form method="GET" class="filter">
-<label>Filter Status:</label>
+Filter Status:
 <select name="status" onchange="this.form.submit()">
 <option value="semua">Semua</option>
 <option value="Hadir">Hadir</option>
@@ -149,8 +184,6 @@ border:1px solid #ccc;
 <option value="Alpha">Alpha</option>
 </select>
 </form>
-
-<div class="table-wrapper">
 
 <table>
 
@@ -175,7 +208,7 @@ border:1px solid #ccc;
 
 <td>{{ siswa.tanggal.strftime("%d-%m-%Y") }}</td>
 
-<td>
+<td class="aksi">
 <a href="/hapus/{{ siswa.id }}">
 <button class="hapus">🗑 Hapus</button>
 </a>
