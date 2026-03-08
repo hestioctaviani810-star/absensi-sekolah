@@ -1,27 +1,41 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html lang="id">
 <head>
-<meta http-equiv="refresh" content="2;url=/">
-<title>Berhasil</title><style>
-
+<meta charset="UTF-8">
+<title>Berhasil Absen</title>
+<style>
 body{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-font-family:Arial;
-background:linear-gradient(135deg,#55efc4,#81ecec);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    background:#dff9fb;
+    font-family:Arial, Helvetica, sans-serif;
 }
-
-.box{
-background:white;
-padding:40px;
-border-radius:15px;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
-text-align:center;
+.card{
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    text-align:center;
 }
-
-</style></head><body><div class="box">
-<h2>✅ Absensi Berhasil</h2>
-<p>Kembali ke halaman absen...</p>
-</div></body>
+button{
+    margin-top:20px;
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    background:#00b894;
+    color:white;
+    cursor:pointer;
+    font-size:14px;
+}
+button:hover{background:#019875;}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>✅ Absensi {{ nama }} Berhasil!</h2>
+<a href="/"><button>⬅ Kembali</button></a>
+</div>
+</body>
 </html>

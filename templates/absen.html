@@ -1,128 +1,63 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Absensi Siswa</title><style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-background:linear-gradient(135deg,#74b9ff,#81ecec);
-}
-
-.card{
-background:white;
-padding:35px;
-width:360px;
-border-radius:15px;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
-text-align:center;
-}
-
-h2{
-margin-bottom:20px;
-color:#2c3e50;
-}
-
-input,select{
-width:100%;
-padding:12px;
-margin-bottom:15px;
-border-radius:8px;
-border:1px solid #ccc;
-font-size:14px;
-}
-
-button{
-width:100%;
-padding:12px;
-border:none;
-border-radius:8px;
-background:#00b894;
-color:white;
-font-size:15px;
-cursor:pointer;
-transition:0.3s;
-}
-
-button:hover{
-background:#019875;
-}
-
-.login-link{
-margin-top:15px;
-font-size:13px;
-color:#555;
-}
-
-.login-link a{
-color:#6c5ce7;
-text-decoration:none;
-font-weight:bold;
-}
-
-.login-link a:hover{
-text-decoration:underline;
-}
-
-@media(max-width:500px){
-
-.card{
-width:90%;
-padding:25px;
-}
-
-}
-
-</style></head><body><div class="card"><h2>📋 Absensi Siswa</h2><form action="/absen" method="POST"><input type="text" name="nama" placeholder="Nama siswa" required><select name="kelas" required><option value="">Pilih Kelas</option><optgroup label="Kelas X">
-<option>X-1</option>
-<option>X-2</option>
-<option>X-3</option>
-<option>X-4</option>
-<option>X-5</option>
-<option>X-6</option>
-<option>X-7</option>
-<option>X-8</option>
-<option>X-9</option>
-<option>X-10</option>
-</optgroup><optgroup label="Kelas XI">
-<option>XI Saintek 1</option>
-<option>XI Saintek 2</option>
-<option>XI Sainkes 1</option>
-<option>XI Sainkes 2</option>
-<option>XI Sosek 1</option>
-<option>XI Sosek 2</option>
-<option>XI Soshum 1</option>
-<option>XI Soshum 2</option>
-<option>XI Soshum 3</option>
-</optgroup><optgroup label="Kelas XII">
-<option>XII Saintek 1</option>
-<option>XII Saintek 2</option>
-<option>XII Sainkes 1</option>
-<option>XII Sainkes 2</option>
-<option>XII Sosek 1</option>
-<option>XII Sosek 2</option>
-<option>XII Soshum 1</option>
-<option>XII Soshum 2</option>
-<option>XII Soshum 3</option>
-<option>XII Soshum 4</option>
-<option>XII Soshum 5</option>
-</optgroup></select><select name="status" required>
+<title>Absensi Siswa</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, Helvetica, sans-serif;}
+body{height:100vh;display:flex;justify-content:center;align-items:center;background:linear-gradient(135deg,#74b9ff,#81ecec);}
+.card{background:white;padding:35px;width:350px;border-radius:15px;box-shadow:0 10px 25px rgba(0,0,0,0.2);text-align:center;}
+h2{margin-bottom:20px;color:#2c3e50;}
+input,select{width:100%;padding:12px;margin-bottom:15px;border-radius:8px;border:1px solid #ccc;font-size:14px;}
+button{width:100%;padding:12px;border:none;border-radius:8px;background:#00b894;color:white;font-size:15px;cursor:pointer;transition:0.3s;}
+button:hover{background:#019875;}
+.login-link{margin-top:15px;font-size:13px;color:#555;}
+.login-link a{color:#6c5ce7;text-decoration:none;font-weight:bold;}
+.login-link a:hover{text-decoration:underline;}
+.success-msg{color:#27ae60;margin-bottom:15px;display:none;}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>📋 Absensi Siswa</h2>
+<div class="success-msg" id="success-msg">✅ Absensi Berhasil!</div>
+<form id="absen-form">
+<input type="text" name="nama" placeholder="Nama siswa" required>
+<select name="kelas" required>
+<option value="">Pilih Kelas</option>
+{% for k in kelas_list %}
+<option>{{ k }}</option>
+{% endfor %}
+</select>
+<select name="status" required>
 <option>Hadir</option>
 <option>Izin</option>
 <option>Sakit</option>
 <option>Alpha</option>
-</select><button type="submit">📌 Absen Sekarang</button>
-
-</form><div class="login-link">
+</select>
+<button type="submit">📌 Absen Sekarang</button>
+</form>
+<div class="login-link">
 Guru? <a href="/login">Login disini</a>
-</div></div></body>
+</div>
+</div>
+
+<script>
+const form = document.getElementById("absen-form");
+form.addEventListener("submit", async function(e){
+    e.preventDefault();
+    const formData = new FormData(form);
+    const response = await fetch("/absen",{
+        method:"POST",
+        body: formData
+    });
+    const result = await response.json();
+    if(result.success){
+        const msg = document.getElementById("success-msg");
+        msg.style.display="block";
+        setTimeout(()=>{ msg.style.display="none"; form.reset(); },2000);
+    }
+});
+</script>
+</body>
 </html>

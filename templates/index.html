@@ -2,184 +2,75 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Absensi Siswa</title>
-
+<title>Dashboard Absensi Realtime</title>
 <style>
-body{
-    font-family:Arial;
-    background:#f0f2f5;
-    margin:0;
-}
-.container{
-    width:90%;
-    max-width:1200px;
-    margin:40px auto;
-}
-.card{
-    background:white;
-    padding:25px;
-    border-radius:12px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.1);
-}
-h2{
-    text-align:center;
-    color:#2c3e50;
-    margin-bottom:20px;
-}
-button{
-    padding:8px 16px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    transition:0.2s;
-}
-button:hover{
-    transform:scale(1.05);
-}
-.export{
-    background:#3498db;
-    color:white;
-    margin-right:10px;
-}
-.logout{
-    background:#e74c3c;
-    color:white;
-}
-.edit{
-    background:#f1c40f;
-    color:white;
-}
-.edit:hover{
-    background:#d4ac0d;
-}
-.hapus{
-    background:#e74c3c;
-    color:white;
-}
-.hapus:hover{
-    background:#c0392b;
-}
-.top{
-    text-align:center;
-    margin-bottom:20px;
-}
-.stats{
-    display:flex;
-    gap:10px;
-    margin-bottom:20px;
-    flex-wrap:wrap;
-}
-.stat{
-    flex:1;
-    padding:20px;
-    color:white;
-    border-radius:10px;
-    text-align:center;
-    font-weight:bold;
-    min-width:120px;
-}
+body{font-family:Arial;background:#f5f7fa;margin:0;}
+.container{width:90%;max-width:1100px;margin:40px auto;}
+.card{background:white;padding:25px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.1);}
+h2{text-align:center;color:#2c3e50;margin-bottom:20px;}
+button{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;transition:0.2s;}
+button:hover{transform:scale(1.05);}
+.export{background:#3498db;color:white;margin-right:10px;}
+.logout{background:#e74c3c;color:white;}
+.hapus{background:#ff4d4d;color:white;margin-left:5px;}
+.edit{background:#f1c40f;color:white;}
+.top{text-align:center;margin-bottom:20px;}
+.stats{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.stat{flex:1;padding:20px;color:white;border-radius:10px;text-align:center;font-weight:bold;min-width:120px;}
 .hadir{background:#2ecc71;}
 .izin{background:#f39c12;}
 .sakit{background:#3498db;}
 .alpha{background:#e74c3c;}
-.table-container{
-    overflow-x:auto;
-}
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-th{
-    background:#5dade2;
-    color:white;
-    padding:12px;
-}
-td{
-    padding:12px;
-    text-align:center;
-    border-bottom:1px solid #eee;
-}
-tr:hover{
-    background:#f2f6ff;
-}
+.table-container{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{background:#5dade2;color:white;padding:12px;}
+td{padding:12px;text-align:center;border-bottom:1px solid #eee;}
+tr:hover{background:#f2f6ff;}
 .status-hadir{color:#2ecc71;font-weight:bold;}
 .status-izin{color:#f39c12;font-weight:bold;}
 .status-sakit{color:#3498db;font-weight:bold;}
-.status-alpha{color:#e74c3c;font-weight:bold;}
-.aksi {
-    display:flex;
-    justify-content:center;
-    gap:5px;
-}
-.filter{
-    text-align:center;
-    margin-bottom:15px;
-}
-select{
-    padding:5px;
-    border-radius:5px;
-}
+.status-alpha{color:#e74c3c;}
+.aksi{display:flex;justify-content:center;}
+.filter{text-align:center;margin-bottom:15px;}
+select{padding:5px;border-radius:5px;}
 </style>
-
-<!-- JQUERY & AJAX untuk realtime tabel -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-function loadData() {
-    $.get("/dashboard-data", function(data) {
-        $("#tabel-body").html(data);
-    });
-}
-
-$(document).ready(function(){
-    loadData(); // load pertama
-    setInterval(loadData, 2000); // update setiap 2 detik
-});
-</script>
-
 </head>
 <body>
-
 <div class="container">
 <div class="card">
-<h2>📊 Data Absensi Siswa SMAN 1 Ciomas</h2>
-
+<h2>📊 Dashboard Absensi Siswa SMAN 1 Ciomas (Realtime)</h2>
 <div class="top">
 <a href="/export"><button class="export">📥 Export Excel</button></a>
 <a href="/logout"><button class="logout">Logout</button></a>
 </div>
 
 <div class="stats">
-<div class="stat hadir">Hadir<br>{{ hadir }}</div>
-<div class="stat izin">Izin<br>{{ izin }}</div>
-<div class="stat sakit">Sakit<br>{{ sakit }}</div>
-<div class="stat alpha">Alpha<br>{{ alpha }}</div>
+<div class="stat hadir" id="hadir-count">Hadir<br>{{ hadir }}</div>
+<div class="stat izin" id="izin-count">Izin<br>{{ izin }}</div>
+<div class="stat sakit" id="sakit-count">Sakit<br>{{ sakit }}</div>
+<div class="stat alpha" id="alpha-count">Alpha<br>{{ alpha }}</div>
 </div>
 
-<form method="GET" class="filter">
-Filter Kelas:
-<select name="kelas" onchange="this.form.submit()">
+<form method="GET" class="filter" id="filter-form">
+Kelas: 
+<select name="kelas" id="kelas-filter">
 <option value="semua">Semua</option>
-<option>X-1</option><option>X-2</option><option>X-3</option><option>X-4</option><option>X-5</option>
-<option>X-6</option><option>X-7</option><option>X-8</option><option>X-9</option><option>X-10</option>
-<option>XI Saintek 1</option><option>XI Saintek 2</option><option>XI Sainkes 1</option><option>XI Sainkes 2</option>
-<option>XI Sosek 1</option><option>XI Sosek 2</option><option>XI Soshum 1</option><option>XI Soshum 2</option><option>XI Soshum 3</option>
-<option>XII Saintek 1</option><option>XII Saintek 2</option><option>XII Sainkes 1</option><option>XII Sainkes 2</option>
-<option>XII Sosek 1</option><option>XII Sosek 2</option><option>XII Soshum 1</option><option>XII Soshum 2</option>
-<option>XII Soshum 3</option><option>XII Soshum 4</option><option>XII Soshum 5</option>
+{% for k in kelas_list %}
+<option value="{{k}}" {% if kelas_filter==k %}selected{% endif %}>{{k}}</option>
+{% endfor %}
 </select>
-
-Filter Status:
-<select name="status" onchange="this.form.submit()">
-<option value="semua">Semua</option>
-<option value="Hadir">Hadir</option>
-<option value="Izin">Izin</option>
-<option value="Sakit">Sakit</option>
-<option value="Alpha">Alpha</option>
+Status:
+<select name="status" id="status-filter">
+<option value="semua" {% if status_filter=='semua' %}selected{% endif %}>Semua</option>
+<option value="Hadir" {% if status_filter=='Hadir' %}selected{% endif %}>Hadir</option>
+<option value="Izin" {% if status_filter=='Izin' %}selected{% endif %}>Izin</option>
+<option value="Sakit" {% if status_filter=='Sakit' %}selected{% endif %}>Sakit</option>
+<option value="Alpha" {% if status_filter=='Alpha' %}selected{% endif %}>Alpha</option>
 </select>
 </form>
 
 <div class="table-container">
-<table>
+<table id="absensi-table">
 <tr>
 <th>Nama</th>
 <th>Kelas</th>
@@ -188,26 +79,85 @@ Filter Status:
 <th>Status</th>
 <th>Aksi</th>
 </tr>
-<tbody id="tabel-body">
 {% for siswa in data %}
 <tr>
 <td>{{ siswa.nama }}</td>
 <td>{{ siswa.kelas }}</td>
-<td>{{ siswa.tanggal.strftime("%d-%m-%Y") }}</td>
+<td>{{ siswa.tanggal }}</td>
 <td>{{ siswa.jam }}</td>
 <td class="status-{{ siswa.status|lower }}">{{ siswa.status }}</td>
 <td class="aksi">
-<a href="/edit/{{ siswa.id }}"><button class="edit">✏️ Edit</button></a>
-<a href="/hapus/{{ siswa.id }}"><button class="hapus">🗑 Hapus</button></a>
+<form style="display:flex;" onsubmit="return false;">
+<button class="edit" onclick="editData({{siswa.id}})">✏ Edit</button>
+<button class="hapus" onclick="hapusData({{siswa.id}})">🗑 Hapus</button>
+</form>
 </td>
 </tr>
 {% endfor %}
-</tbody>
 </table>
 </div>
-
 </div>
 </div>
 
+<script>
+// ----------------------------
+// HAPUS DATA LANGSUNG
+function hapusData(id){
+    fetch(`/hapus/${id}`, {method:"POST"})
+    .then(()=> loadData());
+}
+
+// EDIT DATA (popup sederhana)
+function editData(id){
+    let nama = prompt("Nama baru:");
+    if(nama==null) return;
+    let kelas = prompt("Kelas baru:");
+    if(kelas==null) return;
+    let status = prompt("Status baru (Hadir/Izin/Sakit/Alpha):");
+    if(status==null) return;
+
+    let formData = new FormData();
+    formData.append("nama", nama);
+    formData.append("kelas", kelas);
+    formData.append("status", status);
+
+    fetch(`/edit/${id}`, {method:"POST", body: formData})
+    .then(()=> loadData());
+}
+
+// ----------------------------
+// RELOAD DATA REAKTIF
+function loadData(){
+    let kelas = document.getElementById("kelas-filter").value;
+    let status = document.getElementById("status-filter").value;
+    fetch(`/dashboard?kelas=${kelas}&status=${status}`)
+    .then(res=>res.text())
+    .then(html=>{
+        // parsing html sementara
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(html,"text/html");
+        let newTable = doc.getElementById("absensi-table");
+        let newHadir = doc.getElementById("hadir-count").innerHTML.split("<br>")[1];
+        let newIzin = doc.getElementById("izin-count").innerHTML.split("<br>")[1];
+        let newSakit = doc.getElementById("sakit-count").innerHTML.split("<br>")[1];
+        let newAlpha = doc.getElementById("alpha-count").innerHTML.split("<br>")[1];
+
+        document.getElementById("absensi-table").innerHTML = newTable.innerHTML;
+        document.getElementById("hadir-count").innerHTML = "Hadir<br>"+newHadir;
+        document.getElementById("izin-count").innerHTML = "Izin<br>"+newIzin;
+        document.getElementById("sakit-count").innerHTML = "Sakit<br>"+newSakit;
+        document.getElementById("alpha-count").innerHTML = "Alpha<br>"+newAlpha;
+    });
+}
+
+// ----------------------------
+// FILTER ONCHANGE
+document.getElementById("kelas-filter").addEventListener("change", loadData);
+document.getElementById("status-filter").addEventListener("change", loadData);
+
+// ----------------------------
+// AUTO RELOAD SETIAP 2 DETIK
+setInterval(loadData,2000);
+</script>
 </body>
 </html>

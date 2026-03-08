@@ -2,146 +2,69 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Edit Data Absensi</title>
+<title>Edit Absensi</title>
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(135deg,#74b9ff,#81ecec);
-}
-
-.card{
-    background:white;
-    padding:35px;
-    width:350px;
-    border-radius:15px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
-    text-align:center;
-}
-
-h2{
-    margin-bottom:20px;
-    color:#2c3e50;
-}
-
-input, select{
-    width:100%;
-    padding:12px;
-    margin-bottom:15px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    font-size:14px;
-}
-
-button{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    background:#00b894;
-    color:white;
-    font-size:15px;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-button:hover{
-    background:#019875;
-}
-
-.back{
-    margin-top:15px;
-    font-size:13px;
-}
-
-.back a{
-    text-decoration:none;
-    color:#6c5ce7;
-    font-weight:bold;
-}
-
-.back a:hover{
-    text-decoration:underline;
-}
-
-/* RESPONSIVE */
-@media(max-width:500px){
-    .card{
-        width:90%;
-        padding:25px;
-    }
-}
+body{font-family:Arial,sans-serif;background:#f5f7fa;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;}
+.card{background:white;padding:30px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.1);width:350px;text-align:center;}
+h2{margin-bottom:20px;color:#2c3e50;}
+input,select{width:100%;padding:12px;margin-bottom:15px;border-radius:8px;border:1px solid #ccc;font-size:14px;}
+button{width:100%;padding:12px;border:none;border-radius:8px;background:#00b894;color:white;font-size:15px;cursor:pointer;transition:0.3s;}
+button:hover{background:#019875;}
+.back{margin-top:15px;font-size:13px;}
+.back a{text-decoration:none;color:#6c5ce7;font-weight:bold;}
+.back a:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
-
 <div class="card">
-
-<h2>✏️ Edit Absensi</h2>
-
-<form action="" method="POST">
-
-<input type="text" name="nama" placeholder="Nama siswa" value="{{ absen.nama }}" required>
-
+<h2>✏ Edit Absensi</h2>
+<form action="/edit/{{ siswa.id }}" method="POST">
+<input type="text" name="nama" value="{{ siswa.nama }}" required>
 <select name="kelas" required>
 <option value="">Pilih Kelas</option>
-<option {% if absen.kelas=="X-1" %}selected{% endif %}>X-1</option>
-<option {% if absen.kelas=="X-2" %}selected{% endif %}>X-2</option>
-<option {% if absen.kelas=="X-3" %}selected{% endif %}>X-3</option>
-<option {% if absen.kelas=="X-4" %}selected{% endif %}>X-4</option>
-<option {% if absen.kelas=="X-5" %}selected{% endif %}>X-5</option>
-<option {% if absen.kelas=="X-6" %}selected{% endif %}>X-6</option>
-<option {% if absen.kelas=="X-7" %}selected{% endif %}>X-7</option>
-<option {% if absen.kelas=="X-8" %}selected{% endif %}>X-8</option>
-<option {% if absen.kelas=="X-9" %}selected{% endif %}>X-9</option>
-<option {% if absen.kelas=="X-10" %}selected{% endif %}>X-10</option>
-
-<option {% if absen.kelas=="XI Saintek 1" %}selected{% endif %}>XI Saintek 1</option>
-<option {% if absen.kelas=="XI Saintek 2" %}selected{% endif %}>XI Saintek 2</option>
-<option {% if absen.kelas=="XI Sainkes 1" %}selected{% endif %}>XI Sainkes 1</option>
-<option {% if absen.kelas=="XI Sainkes 2" %}selected{% endif %}>XI Sainkes 2</option>
-<option {% if absen.kelas=="XI Sosek 1" %}selected{% endif %}>XI Sosek 1</option>
-<option {% if absen.kelas=="XI Sosek 2" %}selected{% endif %}>XI Sosek 2</option>
-<option {% if absen.kelas=="XI Soshum 1" %}selected{% endif %}>XI Soshum 1</option>
-<option {% if absen.kelas=="XI Soshum 2" %}selected{% endif %}>XI Soshum 2</option>
-<option {% if absen.kelas=="XI Soshum 3" %}selected{% endif %}>XI Soshum 3</option>
-
-<option {% if absen.kelas=="XII Saintek 1" %}selected{% endif %}>XII Saintek 1</option>
-<option {% if absen.kelas=="XII Saintek 2" %}selected{% endif %}>XII Saintek 2</option>
-<option {% if absen.kelas=="XII Sainkes 1" %}selected{% endif %}>XII Sainkes 1</option>
-<option {% if absen.kelas=="XII Sainkes 2" %}selected{% endif %}>XII Sainkes 2</option>
-<option {% if absen.kelas=="XII Sosek 1" %}selected{% endif %}>XII Sosek 1</option>
-<option {% if absen.kelas=="XII Sosek 2" %}selected{% endif %}>XII Sosek 2</option>
-<option {% if absen.kelas=="XII Soshum 1" %}selected{% endif %}>XII Soshum 1</option>
-<option {% if absen.kelas=="XII Soshum 2" %}selected{% endif %}>XII Soshum 2</option>
-<option {% if absen.kelas=="XII Soshum 3" %}selected{% endif %}>XII Soshum 3</option>
-<option {% if absen.kelas=="XII Soshum 4" %}selected{% endif %}>XII Soshum 4</option>
-<option {% if absen.kelas=="XII Soshum 5" %}selected{% endif %}>XII Soshum 5</option>
+<option {% if siswa.kelas=="X-1" %}selected{% endif %}>X-1</option>
+<option {% if siswa.kelas=="X-2" %}selected{% endif %}>X-2</option>
+<option {% if siswa.kelas=="X-3" %}selected{% endif %}>X-3</option>
+<option {% if siswa.kelas=="X-4" %}selected{% endif %}>X-4</option>
+<option {% if siswa.kelas=="X-5" %}selected{% endif %}>X-5</option>
+<option {% if siswa.kelas=="X-6" %}selected{% endif %}>X-6</option>
+<option {% if siswa.kelas=="X-7" %}selected{% endif %}>X-7</option>
+<option {% if siswa.kelas=="X-8" %}selected{% endif %}>X-8</option>
+<option {% if siswa.kelas=="X-9" %}selected{% endif %}>X-9</option>
+<option {% if siswa.kelas=="X-10" %}selected{% endif %}>X-10</option>
+<!-- XI & XII -->
+<option {% if siswa.kelas=="XI Saintek 1" %}selected{% endif %}>XI Saintek 1</option>
+<option {% if siswa.kelas=="XI Saintek 2" %}selected{% endif %}>XI Saintek 2</option>
+<option {% if siswa.kelas=="XI Sainkes 1" %}selected{% endif %}>XI Sainkes 1</option>
+<option {% if siswa.kelas=="XI Sainkes 2" %}selected{% endif %}>XI Sainkes 2</option>
+<option {% if siswa.kelas=="XI Sosek 1" %}selected{% endif %}>XI Sosek 1</option>
+<option {% if siswa.kelas=="XI Sosek 2" %}selected{% endif %}>XI Sosek 2</option>
+<option {% if siswa.kelas=="XI Soshum 1" %}selected{% endif %}>XI Soshum 1</option>
+<option {% if siswa.kelas=="XI Soshum 2" %}selected{% endif %}>XI Soshum 2</option>
+<option {% if siswa.kelas=="XI Soshum 3" %}selected{% endif %}>XI Soshum 3</option>
+<option {% if siswa.kelas=="XII Saintek 1" %}selected{% endif %}>XII Saintek 1</option>
+<option {% if siswa.kelas=="XII Saintek 2" %}selected{% endif %}>XII Saintek 2</option>
+<option {% if siswa.kelas=="XII Sainkes 1" %}selected{% endif %}>XII Sainkes 1</option>
+<option {% if siswa.kelas=="XII Sainkes 2" %}selected{% endif %}>XII Sainkes 2</option>
+<option {% if siswa.kelas=="XII Sosek 1" %}selected{% endif %}>XII Sosek 1</option>
+<option {% if siswa.kelas=="XII Sosek 2" %}selected{% endif %}>XII Sosek 2</option>
+<option {% if siswa.kelas=="XII Soshum 1" %}selected{% endif %}>XII Soshum 1</option>
+<option {% if siswa.kelas=="XII Soshum 2" %}selected{% endif %}>XII Soshum 2</option>
+<option {% if siswa.kelas=="XII Soshum 3" %}selected{% endif %}>XII Soshum 3</option>
+<option {% if siswa.kelas=="XII Soshum 4" %}selected{% endif %}>XII Soshum 4</option>
+<option {% if siswa.kelas=="XII Soshum 5" %}selected{% endif %}>XII Soshum 5</option>
 </select>
-
 <select name="status" required>
-<option {% if absen.status=="Hadir" %}selected{% endif %}>Hadir</option>
-<option {% if absen.status=="Izin" %}selected{% endif %}>Izin</option>
-<option {% if absen.status=="Sakit" %}selected{% endif %}>Sakit</option>
-<option {% if absen.status=="Alpha" %}selected{% endif %}>Alpha</option>
+<option {% if siswa.status=="Hadir" %}selected{% endif %}>Hadir</option>
+<option {% if siswa.status=="Izin" %}selected{% endif %}>Izin</option>
+<option {% if siswa.status=="Sakit" %}selected{% endif %}>Sakit</option>
+<option {% if siswa.status=="Alpha" %}selected{% endif %}>Alpha</option>
 </select>
-
 <button type="submit">💾 Simpan Perubahan</button>
 </form>
-
 <div class="back">
 <a href="/dashboard">⬅ Kembali ke Dashboard</a>
 </div>
-
 </div>
 </body>
 </html>
