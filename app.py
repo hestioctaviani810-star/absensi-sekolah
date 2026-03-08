@@ -1,116 +1,162 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-import csv
 import os
+import pandas as pd
 
 app = Flask(__name__)
-app.secret_key = "secret123"
+app.secret_key = "smancio_secret"
 
-CSV_FILE = "absensi.csv"
+# ========================
+# DATABASE SETUP
+# ========================
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///absensi.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+class Absensi(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nama = db.Column(db.String(100))
+    kelas = db.Column(db.String(50))
+    tanggal = db.Column(db.DateTime)
+    jam = db.Column(db.String(10))
+    status = db.Column(db.String(10))
+
+with app.app_context():
+    db.create_all()
+
+# ========================
+# KONSTANT LOGIN
+# ========================
+USERNAME = "smancio admin"
+PASSWORD = "smanciojaya123"
 
 # ========================
 # HALAMAN ABSEN SISWA
 # ========================
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def absen():
+    if request.method == "POST":
+        nama = request.form.get("nama")
+        kelas = request.form.get("kelas")
+        status = request.form.get("status")
+        now = datetime.now()
+        absen_data = Absensi(
+            nama=nama,
+            kelas=kelas,
+            tanggal=now,
+            jam=now.strftime("%H:%M"),
+            status=status
+        )
+        db.session.add(absen_data)
+        db.session.commit()
+        return render_template("berhasil.html")
     return render_template("absen.html")
-
-@app.route("/absen", methods=["POST"])
-def proses_absen():
-    nama = request.form.get("nama")
-    kelas = request.form.get("kelas")
-    status = request.form.get("status")
-
-    tanggal = datetime.now().strftime("%Y-%m-%d")
-    jam = datetime.now().strftime("%H:%M:%S")
-
-    with open(CSV_FILE, "a", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow([nama, kelas, tanggal, jam, status])
-
-    return render_template("berhasil.html")
-
 
 # ========================
 # LOGIN GURU
 # ========================
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["GET","POST"])
 def login():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-        if username == "smancio admin" and password == "smanciojaya123":
+        if username == USERNAME and password == PASSWORD:
             return redirect(url_for("dashboard"))
         else:
             return "Login gagal! Username atau password salah."
     return render_template("login.html")
-
 
 # ========================
 # DASHBOARD GURU
 # ========================
 @app.route("/dashboard")
 def dashboard():
-    kelas_list = [
-        "X-1","X-2","X-3","X-4","X-5","X-6","X-7","X-8","X-9","X-10",
-        "XI Saintek 1","XI Saintek 2","XI Sainkes 1","XI Sainkes 2",
-        "XI Sosek 1","XI Sosek 2","XI Soshum 1","XI Soshum 2","XI Soshum 3",
-        "XII Saintek 1","XII Saintek 2","XII Sainkes 1","XII Sainkes 2",
-        "XII Sosek 1","XII Sosek 2","XII Soshum 1","XII Soshum 2","XII Soshum 3","XII Soshum 4","XII Soshum 5"
-    ]
-    status_list = ["Hadir","Izin","Sakit","Alpha"]
-    return render_template("index.html", kelas_list=kelas_list, status_list=status_list)
+    kelas_filter = request.args.get("kelas", "semua")
+    status_filter = request.args.get("status", "semua")
 
+    query = Absensi.query
+    if kelas_filter != "semua":
+        query = query.filter_by(kelas=kelas_filter)
+    if status_filter != "semua":
+        query = query.filter_by(status=status_filter)
+
+    data = query.order_by(Absensi.tanggal.desc(), Absensi.jam.desc()).all()
+
+    # Statistik
+    hadir = Absensi.query.filter_by(status="Hadir").count()
+    izin = Absensi.query.filter_by(status="Izin").count()
+    sakit = Absensi.query.filter_by(status="Sakit").count()
+    alpha = Absensi.query.filter_by(status="Alpha").count()
+
+    return render_template("index.html", data=data, hadir=hadir, izin=izin, sakit=sakit, alpha=alpha)
 
 # ========================
-# API UNTUK RELOAD DATA + FILTER + STATISTIK
+# DASHBOARD DATA (AJAX)
 # ========================
-@app.route("/api/data")
-def api_data():
-    kelas_filter = request.args.get("kelas", "")
-    status_filter = request.args.get("status", "")
+@app.route("/dashboard-data")
+def dashboard_data():
+    data = Absensi.query.order_by(Absensi.tanggal.desc(), Absensi.jam.desc()).all()
+    rows = ""
+    for siswa in data:
+        rows += f"""
+        <tr>
+        <td>{siswa.nama}</td>
+        <td>{siswa.kelas}</td>
+        <td>{siswa.tanggal.strftime("%d-%m-%Y")}</td>
+        <td>{siswa.jam}</td>
+        <td class="status-{siswa.status.lower()}">{siswa.status}</td>
+        <td class="aksi">
+            <a href='/edit/{siswa.id}'><button class='edit'>✏️ Edit</button></a>
+            <a href='/hapus/{siswa.id}'><button class='hapus'>🗑 Hapus</button></a>
+        </td>
+        </tr>
+        """
+    return rows
 
-    data = []
-    statistik = {"Hadir":0, "Izin":0, "Sakit":0, "Alpha":0}
-
-    if os.path.exists(CSV_FILE):
-        with open(CSV_FILE, "r") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if len(row) == 5:
-                    nama, kelas, tanggal, jam, status = row
-                    if (kelas_filter == "" or kelas_filter == kelas) and \
-                       (status_filter == "" or status_filter == status):
-                        data.append({
-                            "nama": nama,
-                            "kelas": kelas,
-                            "tanggal": tanggal,
-                            "jam": jam,
-                            "status": status
-                        })
-                        if status in statistik:
-                            statistik[status] += 1
-
-    return jsonify({"data":data, "statistik":statistik})
-
+# ========================
+# EDIT DATA
+# ========================
+@app.route("/edit/<int:id>", methods=["GET","POST"])
+def edit(id):
+    absen = Absensi.query.get_or_404(id)
+    if request.method == "POST":
+        absen.nama = request.form.get("nama")
+        absen.kelas = request.form.get("kelas")
+        absen.status = request.form.get("status")
+        db.session.commit()
+        return redirect(url_for("dashboard"))
+    return render_template("edit.html", absen=absen)
 
 # ========================
 # HAPUS DATA
 # ========================
-@app.route("/hapus/<nama>/<kelas>/<tanggal>/<jam>")
-def hapus(nama, kelas, tanggal, jam):
-    rows = []
-    if os.path.exists(CSV_FILE):
-        with open(CSV_FILE, "r") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if row != [nama, kelas, tanggal, jam, row[4]]:
-                    rows.append(row)
-        with open(CSV_FILE, "w", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerows(rows)
+@app.route("/hapus/<int:id>")
+def hapus(id):
+    absen = Absensi.query.get_or_404(id)
+    db.session.delete(absen)
+    db.session.commit()
     return redirect(url_for("dashboard"))
 
+# ========================
+# EXPORT EXCEL
+# ========================
+@app.route("/export")
+def export():
+    data = Absensi.query.all()
+    df = pd.DataFrame([{
+        "Nama": x.nama,
+        "Kelas": x.kelas,
+        "Tanggal": x.tanggal.strftime("%d-%m-%Y"),
+        "Jam": x.jam,
+        "Status": x.status
+    } for x in data])
+    file_path = "absensi_export.xlsx"
+    df.to_excel(file_path, index=False)
+    return send_file(file_path, as_attachment=True)
 
+# ========================
+# JALANKAN SERVER
+# ========================
 if __name__ == "__main__":
     app.run(debug=True)
