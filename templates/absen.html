@@ -74,10 +74,12 @@ text-decoration:underline;
 }
 
 @media(max-width:500px){
+
 .card{
 width:90%;
 padding:25px;
 }
+
 }
 
 </style></head><body><div class="card"><h2>📋 Absensi Siswa</h2><form action="/absen" method="POST"><input type="text" name="nama" placeholder="Nama siswa" required><select name="kelas" required><option value="">Pilih Kelas</option><optgroup label="Kelas X">
@@ -121,6 +123,6 @@ padding:25px;
 </select><button type="submit">📌 Absen Sekarang</button>
 
 </form><div class="login-link">
-Guru? <a href="/">Login disini</a>
+Guru? <a href="/login">Login disini</a>
 </div></div></body>
 </html>

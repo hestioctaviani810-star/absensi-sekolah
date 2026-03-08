@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Login Guru</title>
-
-<style>
+<title>Login Admin SMANCIO</title><style>
 
 *{
 margin:0;
@@ -18,12 +15,12 @@ height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:linear-gradient(135deg,#74b9ff,#a29bfe);
+background:linear-gradient(135deg,#6c5ce7,#74b9ff);
 }
 
-.container{
+.card{
 background:white;
-padding:40px;
+padding:35px;
 width:350px;
 border-radius:15px;
 box-shadow:0 10px 25px rgba(0,0,0,0.2);
@@ -31,7 +28,8 @@ text-align:center;
 }
 
 h2{
-margin-bottom:25px;
+margin-bottom:20px;
+color:#2c3e50;
 }
 
 input{
@@ -56,29 +54,27 @@ transition:0.3s;
 }
 
 button:hover{
-background:#4834d4;
+background:#574bcb;
 }
 
-</style>
-</head>
+.back{
+margin-top:15px;
+font-size:13px;
+}
 
-<body>
+.back a{
+text-decoration:none;
+color:#00b894;
+font-weight:bold;
+}
 
-<div class="container">
+.back a:hover{
+text-decoration:underline;
+}
 
-<h2>👨‍🏫 Login Guru</h2>
+</style></head><body><div class="card"><h2>🔐 Login Admin</h2><form action="/login" method="POST"><input type="text" name="username" placeholder="Username Admin" required><input type="password" name="password" placeholder="Password" required><button type="submit">Login</button>
 
-<form method="POST">
-
-<input type="text" name="username" placeholder="Username" required>
-
-<input type="password" name="password" placeholder="Password" required>
-
-<button type="submit">Login</button>
-
-</form>
-
-</div>
-
-</body>
+</form><div class="back">
+<a href="/">⬅ Kembali ke Halaman Absensi</a>
+</div></div></body>
 </html>

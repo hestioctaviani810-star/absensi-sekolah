@@ -2,240 +2,134 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Absensi</title>
-
+<title>Data Absensi Siswa</title>
 <style>
-
-body{
-font-family:Arial;
-background:#f5f7fa;
-margin:0;
-}
-
-.container{
-width:90%;
-max-width:1100px;
-margin:40px auto;
-}
-
-.card{
-background:white;
-padding:25px;
-border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.1);
-}
-
-h2{
-text-align:center;
-color:#2c3e50;
-margin-bottom:20px;
-}
-
-button{
-padding:8px 16px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-transition:0.2s;
-}
-
-button:hover{
-transform:scale(1.05);
-}
-
-.export{
-background:#3498db;
-color:white;
-margin-right:10px;
-}
-
-.logout{
-background:#e74c3c;
-color:white;
-}
-
-.hapus{
-background:#ff4d4d;
-color:white;
-}
-
-.top{
-text-align:center;
-margin-bottom:20px;
-}
-
-.stats{
-display:flex;
-gap:10px;
-margin-bottom:20px;
-flex-wrap:wrap;
-}
-
-.stat{
-flex:1;
-padding:20px;
-color:white;
-border-radius:10px;
-text-align:center;
-font-weight:bold;
-min-width:120px;
-}
-
+body{font-family:Arial;background:#f5f7fa;margin:0;padding:0;}
+.container{width:90%;max-width:1100px;margin:40px auto;}
+.card{background:white;padding:25px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.1);}
+h2{text-align:center;color:#2c3e50;margin-bottom:20px;}
+button{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;transition:0.2s;}
+button:hover{transform:scale(1.05);}
+.logout{background:#e74c3c;color:white;margin-bottom:15px;}
+.table-container{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{background:#5dade2;color:white;padding:12px;}
+td{padding:12px;text-align:center;border-bottom:1px solid #eee;}
+tr:hover{background:#f2f6ff;}
+.status-Hadir{color:green;font-weight:bold;}
+.status-Izin{color:orange;font-weight:bold;}
+.status-Sakit{color:blue;font-weight:bold;}
+.status-Alpha{color:red;font-weight:bold;}
+.aksi button{background:#ff4d4d;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;}
+.filter{margin-bottom:15px;text-align:center;}
+select{padding:5px;border-radius:5px;margin:0 5px;}
+.stats{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.stat{flex:1;padding:15px;color:white;border-radius:10px;text-align:center;font-weight:bold;min-width:100px;}
 .hadir{background:#2ecc71;}
 .izin{background:#f39c12;}
 .sakit{background:#3498db;}
 .alpha{background:#e74c3c;}
-
-.table-container{
-overflow-x:auto;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-th{
-background:#5dade2;
-color:white;
-padding:12px;
-}
-
-td{
-padding:12px;
-text-align:center;
-border-bottom:1px solid #eee;
-}
-
-tr:hover{
-background:#f2f6ff;
-}
-
-.status-hadir{color:#2ecc71;font-weight:bold;}
-.status-izin{color:#f39c12;font-weight:bold;}
-.status-sakit{color:#3498db;font-weight:bold;}
-.status-alpha{color:#e74c3c;font-weight:bold;}
-
-.aksi a{
-display:flex;
-justify-content:center;
-}
-
-.filter{
-text-align:center;
-margin-bottom:15px;
-}
-
-select{
-padding:5px;
-border-radius:5px;
-}
-
 </style>
-
 </head>
-
 <body>
-
 <div class="container">
-
 <div class="card">
+<h2>📊 Data Absensi Siswa SMAN 1 Ciomas</h2>
+<a href="/logout"><button class="logout">Logout</button></a>
 
-<h2>📊 Dashboard Absensi Siswa SMAN 1 Ciomas</h2>
-
-<div class="top">
-
-<a href="/export">
-<button class="export">📥 Export Excel</button>
-</a>
-
-<a href="/logout">
-<button class="logout">Logout</button>
-</a>
-
-</div>
-
+<!-- STATISTIK -->
 <div class="stats">
-
-<div class="stat hadir">
-Hadir<br>
-{{ hadir }}
+<div class="stat hadir">Hadir<br><span id="stat-hadir">0</span></div>
+<div class="stat izin">Izin<br><span id="stat-izin">0</span></div>
+<div class="stat sakit">Sakit<br><span id="stat-sakit">0</span></div>
+<div class="stat alpha">Alpha<br><span id="stat-alpha">0</span></div>
 </div>
 
-<div class="stat izin">
-Izin<br>
-{{ izin }}
-</div>
-
-<div class="stat sakit">
-Sakit<br>
-{{ sakit }}
-</div>
-
-<div class="stat alpha">
-Alpha<br>
-{{ alpha }}
-</div>
-
-</div>
-
-<form method="GET" class="filter">
-
-Filter Status :
-
-<select name="status" onchange="this.form.submit()">
-<option value="semua">Semua</option>
-<option value="Hadir">Hadir</option>
-<option value="Izin">Izin</option>
-<option value="Sakit">Sakit</option>
-<option value="Alpha">Alpha</option>
+<!-- FILTER -->
+<div class="filter">
+Kelas:
+<select id="filter-kelas">
+<option value="">Semua</option>
+{% for kelas in kelas_list %}
+<option value="{{ kelas }}">{{ kelas }}</option>
+{% endfor %}
 </select>
 
-</form>
+Status:
+<select id="filter-status">
+<option value="">Semua</option>
+{% for status in status_list %}
+<option value="{{ status }}">{{ status }}</option>
+{% endfor %}
+</select>
+</div>
 
 <div class="table-container">
-
-<table>
-
+<table id="tabel-absensi">
+<thead>
 <tr>
 <th>Nama</th>
 <th>Kelas</th>
-<th>Status</th>
 <th>Tanggal</th>
 <th>Jam</th>
+<th>Status</th>
 <th>Aksi</th>
 </tr>
-
-{% for siswa in data %}
-<tr>
-
-<td>{{ siswa.nama }}</td>
-<td>{{ siswa.kelas }}</td>
-
-<td class="status-{{ siswa.status|lower }}">
-{{ siswa.status }}
-</td>
-
-<td>{{ siswa.tanggal.strftime("%d-%m-%Y") }}</td>
-
-<td>{{ siswa.jam }}</td>
-
-<td class="aksi">
-<a href="/hapus/{{ siswa.id }}">
-<button class="hapus">🗑 Hapus</button>
-</a>
-</td>
-
-</tr>
-{% endfor %}
-
+</thead>
+<tbody></tbody>
 </table>
-
 </div>
 
 </div>
-
 </div>
+
+<script>
+const filterKelas = document.getElementById("filter-kelas");
+const filterStatus = document.getElementById("filter-status");
+
+function ambilData(){
+    const kelas = filterKelas.value;
+    const status = filterStatus.value;
+
+    fetch(`/api/data?kelas=${encodeURIComponent(kelas)}&status=${encodeURIComponent(status)}`)
+    .then(res => res.json())
+    .then(resp => {
+        const data = resp.data;
+        const statistik = resp.statistik;
+
+        // update statistik
+        document.getElementById("stat-hadir").textContent = statistik.Hadir;
+        document.getElementById("stat-izin").textContent = statistik.Izin;
+        document.getElementById("stat-sakit").textContent = statistik.Sakit;
+        document.getElementById("stat-alpha").textContent = statistik.Alpha;
+
+        // update tabel
+        const tbody = document.querySelector("#tabel-absensi tbody");
+        tbody.innerHTML = "";
+        data.forEach(d=>{
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${d.nama}</td>
+                <td>${d.kelas}</td>
+                <td>${d.tanggal}</td>
+                <td>${d.jam}</td>
+                <td class="status-${d.status}">${d.status}</td>
+                <td class="aksi">
+                    <form action="/hapus/${d.nama}/${d.kelas}/${d.tanggal}/${d.jam}" method="get">
+                    <button type="submit">Hapus</button>
+                    </form>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    });
+}
+
+setInterval(ambilData,3000);
+filterKelas.addEventListener("change",ambilData);
+filterStatus.addEventListener("change",ambilData);
+ambilData();
+</script>
 
 </body>
 </html>
