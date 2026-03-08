@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from datetime import datetime
+from flask import send_file
+import openpyxl
 import csv
 import os
+import pytz
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -34,7 +37,9 @@ def absen_siswa():
     kelas = request.form.get("kelas")
     status = request.form.get("status")
     
-    now = datetime.now()
+    tz = pytz.timezone("Asia/Jakarta")
+    now = datetime.now(tz)
+
     tanggal = now.strftime("%Y-%m-%d")
     jam = now.strftime("%H:%M:%S")
 
@@ -138,14 +143,31 @@ def edit(id):
         writer = csv.writer(f)
         writer.writerows(rows)
     return jsonify({"success": True})
-
 # =========================
 # EXPORT CSV
 # =========================
 @app.route("/export")
 def export():
-    return redirect("/absensi.csv")  # bisa langsung download file CSV
 
+    file_csv = "absensi.csv"
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Data Absensi"
+
+    # header tabel
+    ws.append(["Tanggal","Jam","Nama","Kelas","Status"])
+
+    if os.path.exists(file_csv):
+        with open(file_csv, "r") as f:
+            reader = csv.reader(f)
+            for row in reader:
+                ws.append(row)
+
+    file_excel = "absensi.xlsx"
+    wb.save(file_excel)
+
+    return send_file(file_excel, as_attachment=True, download_name="absensi.xlsx")
 # =========================
 # JALANKAN SERVER
 # =========================
